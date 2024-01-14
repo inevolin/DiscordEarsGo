@@ -11,7 +11,7 @@ import (
 
 	"encoding/binary"
 
-	vosk "discord/vosk"
+	vosk "github.com/alphacep/vosk-api/go"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/joho/godotenv"
