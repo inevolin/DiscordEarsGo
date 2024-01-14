@@ -79,6 +79,7 @@ func handleMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 					return
 				}
 
+				// TODO: when leave command is given, close objects:
 				// go func() {
 				// 	time.Sleep(10 * time.Second)
 				// 	close(v.OpusRecv)
