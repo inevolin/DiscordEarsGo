@@ -11,28 +11,14 @@ import (
 
 	"encoding/binary"
 
-	vosk "github.com/alphacep/vosk-api/go"
+	vosk "discord/vosk"
+
 	"github.com/bwmarrin/discordgo"
 	"github.com/joho/godotenv"
-	"github.com/pion/rtp"
 	"gopkg.in/hraban/opus.v2"
 )
 
-func createPionRTPPacket(p *discordgo.Packet) *rtp.Packet {
-	return &rtp.Packet{
-		Header: rtp.Header{
-			Version: 2,
-			// Taken from Discord voice docs
-			PayloadType:    0x78,
-			SequenceNumber: p.Sequence,
-			Timestamp:      p.Timestamp,
-			SSRC:           p.SSRC,
-		},
-		Payload: p.Opus,
-	}
-}
-
-var model, _ = vosk.NewModel("./vosk_models/en/")
+var model, _ = vosk.NewModel("./vosk_models/en")
 var stt, _ = vosk.NewRecognizer(model, 48000)
 
 func handleVoice(c chan *discordgo.Packet) {
