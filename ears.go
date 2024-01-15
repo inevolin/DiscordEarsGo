@@ -21,9 +21,9 @@ type STTResult struct {
 	Text string `json:"text"`
 }
 
-var model, _ = vosk.NewModel("./vosk_models/en")
-var stt, _ = vosk.NewRecognizer(model, 48000) // 48kHz
-var speakers, _ = gopus.NewDecoder(48000, 1)  // 48kHz and mono-channel
+var model, _ = vosk.NewModel("./vosk_models/en") // path to Vosk model (default: english-very-small)
+var stt, _ = vosk.NewRecognizer(model, 48000)    // 48kHz
+var speakers, _ = gopus.NewDecoder(48000, 1)     // 48kHz and mono-channel
 var voiceConnection *discordgo.VoiceConnection
 
 func handleVoice(client *discordgo.Session, channelID string, user string, c chan *discordgo.Packet) {

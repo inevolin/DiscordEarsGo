@@ -24,3 +24,6 @@ In your Discord Developers Bot settings, you need to enable these intents:
 2. In one of your text channels type: `*join`, the bot will join the voice channel.
 3. Everything said within that channel will be transcribed into text (as long as the bot is within the voice channel).
 4. Type `*leave` to make the bot leave the voice channel.
+
+## STT
+You can find and download more STT models here: https://alphacephei.com/vosk/models
