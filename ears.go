@@ -52,7 +52,8 @@ func handleVoice(client *discordgo.Session, channelID string, user string, c cha
 				json.Unmarshal([]byte(stt.FinalResult()), &result)
 				if len(result.Text) > 0 {
 					log.Println(fmt.Sprintf("%s: %s", user, result.Text))
-					client.ChannelMessageSend(channelID, fmt.Sprintf("%s: %s", user, result.Text))
+					// process the transcription result:
+					client.ChannelMessageSend(channelID, fmt.Sprintf("%s: %s", user, result.Text)) // send as text to channel
 				}
 				buffer.Reset()
 			}
@@ -65,6 +66,8 @@ func handleMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if m.Author.ID == s.State.User.ID {
 		return
 	}
+
+	// handle text commands:
 
 	if strings.HasPrefix(m.Content, "*join") {
 		// Find the guild for that channel.
