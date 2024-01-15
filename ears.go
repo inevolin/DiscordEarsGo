@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"encoding/binary"
 	"fmt"
 	"log"
 	"os"
@@ -9,37 +10,42 @@ import (
 	"strings"
 	"syscall"
 
-	"encoding/binary"
-
 	vosk "github.com/alphacep/vosk-api/go"
-
 	"github.com/bwmarrin/discordgo"
 	"github.com/joho/godotenv"
-	"gopkg.in/hraban/opus.v2"
+	"layeh.com/gopus"
 )
 
 var model, _ = vosk.NewModel("./vosk_models/en")
 var stt, _ = vosk.NewRecognizer(model, 48000)
+var speakers, _ = gopus.NewDecoder(48000, 1)
 
 func handleVoice(c chan *discordgo.Packet) {
-	decoder, _ := opus.NewDecoder(48000, 2)
-
-	buffer := new(bytes.Buffer)
-
-	frame := make([]int16, 48000)
+	log.Println("handleVoice")
+	var buffer = new(bytes.Buffer)
 	for {
 		select {
 		case s, ok := <-c:
 			if !ok {
 				break
 			}
-			decoder.Decode(s.Opus, frame)
-			binary.Write(buffer, binary.LittleEndian, frame)
-			log.Println(frame)
+			if buffer == nil {
+				buffer = new(bytes.Buffer)
+			}
+			packet, _ := speakers.Decode(s.Opus, 960, false)
+			pcm := new(bytes.Buffer)
+			binary.Write(pcm, binary.LittleEndian, packet)
+			buffer.Write(pcm.Bytes())
+			stt.AcceptWaveform(pcm.Bytes())
 
-			// if stt.AcceptWaveform(out) != 0 {
-			// 	fmt.Println(rec.Result())
-			// }
+			var dur float32 = float32(len(buffer.Bytes())) / 48000 / 2
+			// silence packet
+			if dur > 0.5 && len(s.Opus) == 3 && s.Opus[0] == 248 && s.Opus[1] == 255 && s.Opus[2] == 254 {
+				log.Println("dur", dur)
+				log.Println(stt.FinalResult()) // TODO: parse json
+				buffer.Reset()
+
+			}
 		}
 	}
 }

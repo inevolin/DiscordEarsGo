@@ -6,7 +6,7 @@ require (
 	github.com/alphacep/vosk-api/go v0.3.46
 	github.com/bwmarrin/discordgo v0.27.1
 	github.com/joho/godotenv v1.5.1
-	gopkg.in/hraban/opus.v2 v2.0.0-20230925203106-0188a62cb302
+	layeh.com/gopus v0.0.0-20210501142526-1ee02d434e32
 )
 
 require (
